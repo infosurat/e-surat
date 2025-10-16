@@ -158,6 +158,7 @@
     const ENDPOINT_MASUK = "https://sheetdb.io/api/v1/f10drm0h22cjz";
     const ENDPOINT_KELUAR = "https://sheetdb.io/api/v1/247yl7pptsbkc";
     let endpointAktif = null;
+    let mode = '';
 
     const akun = {
       umum: "umum123", kesra: "kesra123", ekbang: "ekbang123",
@@ -180,8 +181,8 @@
       location.reload();
     }
 
-    btnMasuk.onclick = () => pilih('masuk');
-    btnKeluar.onclick = () => pilih('keluar');
+    btnMasuk.onclick = () => { mode = 'masuk'; pilih('masuk'); };
+    btnKeluar.onclick = () => { mode = 'keluar'; pilih('keluar'); };
 
     function pilih(jenis) {
       endpointAktif = jenis === 'masuk' ? ENDPOINT_MASUK : ENDPOINT_KELUAR;
@@ -249,16 +250,40 @@
       }
     }
 
+    // Fungsi Download PDF (versi yang kamu kirim)
     async function downloadPDF() {
-      const element = document.getElementById("tableSection");
+      const element = document.getElementById('tableSection');
+
+      // Pastikan elemen terlihat sepenuhnya saat dirender
+      element.style.background = '#ffffff';
+      element.style.padding = '10px';
+      element.scrollIntoView({ behavior: 'instant', block: 'start' });
+
+      // Tunggu sedikit agar render stabil
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       const opt = {
         margin: 0.3,
-        filename: "data-e-surat.pdf",
-        image: { type: "jpeg", quality: 1 },
-        html2canvas: { scale: 2, backgroundColor: "#fff" },
-        jsPDF: { unit: "in", format: "a4", orientation: "landscape" }
+        filename: `${mode || 'data'}-e-surat.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: {
+          scale: 3,
+          backgroundColor: '#ffffff',
+          useCORS: true,
+          scrollY: 0
+        },
+        jsPDF: {
+          unit: 'in',
+          format: 'a4',
+          orientation: 'landscape'
+        }
       };
+
       html2pdf().set(opt).from(element).save();
+
+      // Kembalikan style
+      element.style.background = '';
+      element.style.padding = '';
     }
 
     window.onload = () => {
