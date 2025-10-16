@@ -37,82 +37,55 @@
     }
     .login-card .logo { width: 110px; margin-bottom: 10px; }
     .login-card h1 { margin: 6px 0 12px; color: var(--green); }
-    input[type="text"], input[type="password"], input[type="date"], input[type="number"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #e6e9e8;
-      border-radius: 8px;
-      margin-top: 6px;
+    input[type="text"], input[type="password"], input[type="date"] {
+      width: 100%; padding: 10px; border: 1px solid #ccc;
+      border-radius: 8px; margin-top: 6px;
     }
     .btn {
-      background: var(--green);
-      color: #fff;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
+      background: var(--green); color: #fff;
+      border: none; padding: 10px 14px;
+      border-radius: 8px; cursor: pointer; font-weight: 600;
     }
     .btn:hover { background: var(--green-dark); }
     .error { color: #d9534f; margin-top: 8px; }
     .small { font-size: 13px; color: var(--muted); }
     .hidden { display: none; }
     .topbar {
-      background: var(--card);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: var(--card); box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
     }
     .topbar .logo-sm { width: 44px; }
     .brand { display: flex; align-items: center; gap: 10px; }
     .brand h1 { font-size: 18px; margin: 0; color: var(--green); }
     .logout {
-      background: #dc3545;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 10px;
-      cursor: pointer;
+      background: #dc3545; color: #fff; border: none;
+      border-radius: 6px; padding: 6px 10px; cursor: pointer;
     }
     .container { max-width: 1000px; margin: 22px auto; padding: 0 16px; }
     .cards {
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      margin-bottom: 18px;
+      display: flex; gap: 14px; justify-content: center; margin-bottom: 18px;
     }
     .card {
-      background: var(--card);
-      border-radius: 10px;
-      padding: 18px 22px;
-      min-width: 160px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 6px 18px rgba(16,24,40,0.06);
-      border: 1px solid rgba(15,139,102,0.06);
-      cursor: pointer;
+      background: var(--card); border-radius: 10px;
+      padding: 18px 22px; min-width: 160px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 8px; box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+      border: 1px solid rgba(15,139,102,0.06); cursor: pointer;
     }
     .card .icon { font-size: 28px; }
     .card .label { font-weight: 600; color: var(--green); }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-      gap: 12px;
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: var(--green); color: #fff; }
+    td button {
+      background: #dc3545; border: none; color: #fff;
+      padding: 4px 8px; border-radius: 5px; cursor: pointer;
     }
-    label { font-size: 13px; color: var(--muted); }
-    .field { display: flex; flex-direction: column; }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    th, td {
-      padding: 10px 8px;
-      border: 1px solid #ddd;
-      text-align: left;
-      color: #000;
+    .pdf-btn {
+      background: #444; color: #fff; border: none;
+      padding: 8px 14px; border-radius: 8px; cursor: pointer;
+      margin-top: 12px; float: right;
     }
-    th { background: #0f8b66; color: #fff; }
   </style>
 </head>
 <body>
@@ -120,7 +93,7 @@
   <!-- LOGIN -->
   <div class="center-wrap" id="loginPage">
     <div class="login-card">
-      <img src="https://www.kapuashulukab.go.id/home/public/assets/images/pages/pages_70Logo-KH-Baru.png" alt="Logo Kapuas Hulu" class="logo">
+      <img src="https://www.kapuashulukab.go.id/home/public/assets/images/pages/pages_70Logo-KH-Baru.png" class="logo">
       <h1>LOGIN e-Surat</h1>
       <form id="loginForm">
         <input type="text" id="username" placeholder="Username" required />
@@ -151,13 +124,13 @@
       <section id="formArea" class="hidden">
         <h2 id="formTitle">Form</h2>
         <form id="suratForm">
-          <div class="grid">
-            <div class="field"><label>Nomor</label><input type="text" id="nomor" required></div>
-            <div class="field"><label>Nomor Surat</label><input type="text" id="nomorSurat" required></div>
-            <div class="field"><label>Tanggal Surat</label><input type="date" id="tanggalSurat" required></div>
-            <div class="field"><label>Hal</label><input type="text" id="hal" required></div>
-            <div class="field" id="tglField"><label id="tglLabel">Tanggal Diterima / Dikirim</label><input type="date" id="tanggalKirimTerima" required></div>
-            <div class="field"><label id="asalTujuanLabel">Asal / Tujuan Surat</label><input type="text" id="asalTujuan" required></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
+            <div><label>Nomor</label><input type="text" id="nomor" required></div>
+            <div><label>Nomor Surat</label><input type="text" id="nomorSurat" required></div>
+            <div><label>Tanggal Surat</label><input type="date" id="tanggalSurat" required></div>
+            <div><label>Hal</label><input type="text" id="hal" required></div>
+            <div><label id="tglLabel">Tanggal Diterima / Dikirim</label><input type="date" id="tanggalKirimTerima" required></div>
+            <div><label id="asalTujuanLabel">Asal / Tujuan Surat</label><input type="text" id="asalTujuan" required></div>
           </div>
           <div style="margin-top:12px;">
             <button type="submit" class="btn">Simpan</button>
@@ -167,14 +140,17 @@
       </section>
 
       <h3 id="tableTitle">Daftar Surat</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tanggal Diterima/Dikirim</th><th>Asal/Tujuan</th>
-          </tr>
-        </thead>
-        <tbody id="dataBody"></tbody>
-      </table>
+      <div id="tableSection">
+        <table>
+          <thead>
+            <tr>
+              <th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tanggal Diterima/Dikirim</th><th>Asal/Tujuan</th><th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="dataBody"></tbody>
+        </table>
+      </div>
+      <button class="pdf-btn" onclick="downloadPDF()">Download PDF</button>
     </main>
   </div>
 
@@ -184,57 +160,51 @@
     let endpointAktif = null;
 
     const akun = {
-      umum: "umum123",
-      kesra: "kesra123",
-      ekbang: "ekbang123",
-      trantib: "trantib123",
-      pem: "pem123",
-      sekcam: "sekcam123",
+      umum: "umum123", kesra: "kesra123", ekbang: "ekbang123",
+      trantib: "trantib123", pem: "pem123", sekcam: "sekcam123",
       kecamatanseberuang: "seberuang123"
     };
 
-    // === LOGIN ===
-    document.getElementById('loginForm').addEventListener('submit', function(e){
+    document.getElementById('loginForm').addEventListener('submit', e => {
       e.preventDefault();
-      const u = document.getElementById('username').value.trim();
-      const p = document.getElementById('password').value.trim();
+      const u = username.value.trim(), p = password.value.trim();
       if (akun[u] && akun[u] === p) {
         localStorage.setItem('user', u);
-        document.getElementById('loginPage').classList.add('hidden');
-        document.getElementById('dashboardPage').classList.remove('hidden');
-      } else {
-        document.getElementById('error').textContent = "Username atau password salah";
-      }
+        loginPage.classList.add('hidden');
+        dashboardPage.classList.remove('hidden');
+      } else error.textContent = "Username atau password salah.";
     });
 
-    function logout(){
+    function logout() {
       localStorage.removeItem('user');
       location.reload();
     }
 
-    document.getElementById('btnMasuk').onclick = () => pilih('masuk');
-    document.getElementById('btnKeluar').onclick = () => pilih('keluar');
+    btnMasuk.onclick = () => pilih('masuk');
+    btnKeluar.onclick = () => pilih('keluar');
 
-    function pilih(jenis){
-      endpointAktif = (jenis === 'masuk') ? ENDPOINT_MASUK : ENDPOINT_KELUAR;
-      document.getElementById('formArea').classList.remove('hidden');
-      document.getElementById('formTitle').textContent = jenis === 'masuk' ? 'Form Surat Masuk' : 'Form Surat Keluar';
-      document.getElementById('tableTitle').textContent = jenis === 'masuk' ? 'Daftar Surat Masuk' : 'Daftar Surat Keluar';
+    function pilih(jenis) {
+      endpointAktif = jenis === 'masuk' ? ENDPOINT_MASUK : ENDPOINT_KELUAR;
+      formArea.classList.remove('hidden');
+      formTitle.textContent = jenis === 'masuk' ? 'Form Surat Masuk' : 'Form Surat Keluar';
+      tableTitle.textContent = jenis === 'masuk' ? 'Daftar Surat Masuk' : 'Daftar Surat Keluar';
+      tglLabel.textContent = jenis === 'masuk' ? 'Tanggal Diterima' : 'Tanggal Dikirim';
+      asalTujuanLabel.textContent = jenis === 'masuk' ? 'Asal Surat' : 'Tujuan Surat';
       loadData();
     }
 
-    document.getElementById('suratForm').addEventListener('submit', async function(e){
+    suratForm.addEventListener('submit', async e => {
       e.preventDefault();
-      if(!endpointAktif) return alert("Pilih jenis surat dulu");
+      if (!endpointAktif) return alert("Pilih jenis surat dulu");
 
       const data = {
         data: [{
-          Nomor: document.getElementById('nomor').value,
-          Nomor_Surat: document.getElementById('nomorSurat').value,
-          Tanggal_Surat: document.getElementById('tanggalSurat').value,
-          Hal: document.getElementById('hal').value,
-          Tanggal_Diterima_Dikirim: document.getElementById('tanggalKirimTerima').value,
-          Asal_Tujuan_Surat: document.getElementById('asalTujuan').value
+          Nomor: nomor.value,
+          Nomor_Surat: nomorSurat.value,
+          Tanggal_Surat: tanggalSurat.value,
+          Hal: hal.value,
+          Tanggal_Diterima_Dikirim: tanggalKirimTerima.value,
+          Asal_Tujuan_Surat: asalTujuan.value
         }]
       };
 
@@ -243,37 +213,59 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
-
       alert("Data berhasil disimpan!");
-      this.reset();
+      suratForm.reset();
       loadData();
     });
 
-    async function loadData(){
-      if(!endpointAktif)return;
+    async function loadData() {
+      if (!endpointAktif) return;
       const res = await fetch(endpointAktif);
       const data = await res.json();
-      const body = document.getElementById('dataBody');
-      body.innerHTML = "";
-      data.forEach(d=>{
-        const tr = document.createElement('tr');
+      dataBody.innerHTML = "";
+      data.forEach((d, i) => {
+        const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${d.Nomor||""}</td>
           <td>${d.Nomor_Surat||""}</td>
           <td>${d.Tanggal_Surat||""}</td>
           <td>${d.Hal||""}</td>
           <td>${d.Tanggal_Diterima_Dikirim||""}</td>
-          <td>${d.Asal_Tujuan_Surat||""}</td>`;
-        body.appendChild(tr);
+          <td>${d.Asal_Tujuan_Surat||""}</td>
+          <td><button onclick="hapusData(${i})">Hapus</button></td>`;
+        dataBody.appendChild(tr);
       });
     }
 
-    // auto-login kalau sebelumnya sudah masuk
+    async function hapusData(index) {
+      if (!confirm("Yakin ingin menghapus data ini?")) return;
+      const res = await fetch(endpointAktif);
+      const data = await res.json();
+      if (data[index]) {
+        const idValue = data[index].Nomor; // asumsi kolom Nomor unik
+        await fetch(`${endpointAktif}/Nomor/${idValue}`, { method: "DELETE" });
+        alert("Data dihapus!");
+        loadData();
+      }
+    }
+
+    async function downloadPDF() {
+      const element = document.getElementById("tableSection");
+      const opt = {
+        margin: 0.3,
+        filename: "data-e-surat.pdf",
+        image: { type: "jpeg", quality: 1 },
+        html2canvas: { scale: 2, backgroundColor: "#fff" },
+        jsPDF: { unit: "in", format: "a4", orientation: "landscape" }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+
     window.onload = () => {
       const user = localStorage.getItem('user');
       if (user) {
-        document.getElementById('loginPage').classList.add('hidden');
-        document.getElementById('dashboardPage').classList.remove('hidden');
+        loginPage.classList.add('hidden');
+        dashboardPage.classList.remove('hidden');
       }
     };
   </script>
