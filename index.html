@@ -108,60 +108,88 @@
         </form>
       </section>
 
-      <section class="table-area" id="tableSection">
-        <h3 id="tableTitle">Daftar Surat</h3>
-        <table id="dataTable">
-          <thead id="tableHead"></thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-        <button class="btn pdf-btn" onclick="downloadPDF()">Download PDF</button>
-      </section>
-    </main>
+    
+    <h3 id="tableTitle">Daftar Surat</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tanggal Diterima/Dikirim</th><th>Asal/Tujuan</th>
+        </tr>
+      </thead>
+      <tbody id="dataBody"></tbody>
+    </table>
   </div>
+</div>
 
 <script>
-const loginPage=document.getElementById('loginPage');
-const dashboardPage=document.getElementById('dashboardPage');
-const loginForm=document.getElementById('loginForm');
-const errorMsg=document.getElementById('error');
-const btnMasuk=document.getElementById('btnMasuk');
-const btnKeluar=document.getElementById('btnKeluar');
-const formArea=document.getElementById('formArea');
-const formTitle=document.getElementById('formTitle');
-const tableTitle=document.getElementById('tableTitle');
-const tableHead=document.getElementById('tableHead');
-const tableBody=document.getElementById('tableBody');
-const suratForm=document.getElementById('suratForm');
-const nomorInput=document.getElementById('nomor');
-const asalTujuanLabel=document.getElementById('asalTujuanLabel');
-let mode=null;
+const ENDPOINT_MASUK="https://sheetdb.io/api/v1/f10drm0h22cjz";
+const ENDPOINT_KELUAR="https://sheetdb.io/api/v1/247yl7pptsbkc";
+let endpointAktif=null;
 
-loginForm.addEventListener('submit',e=>{
-  e.preventDefault();
+const akun={
+  umum:"umum123",kesra:"kesra123",ekbang:"ekbang123",
+  trantib:"trantib123",pem:"pem123",sekcam:"sekcam123"
+};
+
+function login(){
   const u=document.getElementById('username').value.trim();
   const p=document.getElementById('password').value.trim();
-  if(u==='kecamatanseberuang'&&p==='seberuang123'){
-    localStorage.setItem('loggedIn','true');
-    showDashboard();
-  } else errorMsg.textContent='Username atau Password salah.';
-});
-function showDashboard(){loginPage.classList.add('hidden');dashboardPage.classList.remove('hidden');}
-if(localStorage.getItem('loggedIn')==='true')showDashboard();
-function logout(){localStorage.removeItem('loggedIn');location.reload();}
-function batalForm(){formArea.classList.add('hidden');suratForm.reset();}
-function loadData(k){return JSON.parse(localStorage.getItem(k))||[];}
-function saveData(k,d){localStorage.setItem(k,JSON.stringify(d));}
-function nextNomor(k){const d=loadData(k);return d.length?Math.max(...d.map(x=>Number(x.nomor)))+1:1;}
-function renderTable(k){
-  const d=loadData(k);tableBody.innerHTML='';
-  d.forEach(x=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${x.nomor}</td><td>${x.nomorSurat}</td><td>${x.tanggalSurat}</td><td>${x.hal}</td>${mode==='masuk'?`<td>${x.tanggalKirimTerima}</td><td>${x.asalTujuan}</td>`:`<td>${x.asalTujuan}</td>`}<td><button class='btn small' style='background:#dc3545' onclick='hapusData("${k}",${x.nomor})'>Hapus</button></td>`;
-    tableBody.appendChild(tr);
+  if(akun[u] && akun[u]===p){
+    localStorage.setItem('user',u);
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+  }else{
+    document.getElementById('error').textContent="Username atau password salah";
+  }
+}
+
+function logout(){
+  localStorage.removeItem('user');
+  location.reload();
+}
+
+function pilih(jenis){
+  endpointAktif = (jenis==='masuk') ? ENDPOINT_MASUK : ENDPOINT_KELUAR;
+  document.getElementById('formArea').classList.remove('hidden');
+  document.getElementById('formTitle').textContent = jenis==='masuk'?'Form Surat Masuk':'Form Surat Keluar';
+  document.getElementById('tableTitle').textContent = jenis==='masuk'?'Daftar Surat Masuk':'Daftar Surat Keluar';
+  loadData();
+}
+
+document.getElementById('suratForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  if(!endpointAktif) return alert("Pilih jenis surat dulu");
+  const data={
+    data:[{
+      Nomor:document.getElementById('nomor').value,
+      Nomor_Surat:document.getElementById('nomorSurat').value,
+      Tanggal_Surat:document.getElementById('tanggalSurat').value,
+      Hal:document.getElementById('hal').value,
+      Tanggal_Diterima_Dikirim:document.getElementById('tanggalKirimTerima').value,
+      Asal_Tujuan_Surat:document.getElementById('asalTujuan').value
+    }]
+  };
+  await fetch(endpointAktif,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
   });
-  tableHead.innerHTML=mode==='masuk'
-    ?'<tr><th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tanggal Diterima</th><th>Asal Surat</th><th>Aksi</th></tr>'
-    :'<tr><th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tujuan Surat</th><th>Aksi</th></tr>';
+  alert("Data berhasil disimpan!");
+  this.reset();
+  loadData();
+});
+
+async function loadData(){
+  if(!endpointAktif)return;
+  const res=await fetch(endpointAktif);
+  const data=await res.json();
+  const body=document.getElementById('dataBody');
+  body.innerHTML="";
+  data.forEach(d=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${d.Nomor||""}</td><td>${d.Nomor_Surat||""}</td><td>${d.Tanggal_Surat||""}</td><td>${d.Hal||""}</td><td>${d.Tanggal_Diterima_Dikirim||""}</td><td>${d.Asal_Tujuan_Surat||""}</td>`;
+    body.appendChild(tr);
+  });
 }
 function hapusData(k,n){let d=loadData(k);d=d.filter(x=>x.nomor!=n);saveData(k,d);renderTable(k);}
 btnMasuk.onclick=()=>{mode='masuk';formArea.classList.remove('hidden');formTitle.textContent='Form Surat Masuk';asalTujuanLabel.textContent='Asal Surat';document.getElementById('tglLabel').textContent='Tanggal Diterima';tableTitle.textContent='Daftar Surat Masuk';nomorInput.value=nextNomor('suratMasuk');renderTable('suratMasuk');};
