@@ -171,10 +171,39 @@ suratForm.addEventListener('submit',e=>{
   const item={nomor:nomorInput.value,nomorSurat:document.getElementById('nomorSurat').value,tanggalSurat:document.getElementById('tanggalSurat').value,hal:document.getElementById('hal').value,tanggalKirimTerima:document.getElementById('tanggalKirimTerima').value,asalTujuan:document.getElementById('asalTujuan').value};
   const key=mode==='masuk'?'suratMasuk':'suratKeluar';const data=loadData(key);data.push(item);saveData(key,data);renderTable(key);suratForm.reset();nomorInput.value=nextNomor(key);
 });
-function downloadPDF(){
-  const element=document.getElementById('tableSection');
-  const opt={margin:0.5,filename:`${mode||'data'}-e-surat.pdf`,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2},jsPDF:{unit:'in',format:'a4',orientation:'landscape'}};
-  html2pdf().from(element).set(opt).save();
+async function downloadPDF() {
+  const element = document.getElementById('tableSection');
+
+  // Pastikan elemen terlihat sepenuhnya saat dirender
+  element.style.background = '#ffffff';
+  element.style.padding = '10px';
+  element.scrollIntoView({ behavior: 'instant', block: 'start' });
+
+  // Tunggu sedikit agar render stabil
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  const opt = {
+    margin: 0.3,
+    filename: `${mode || 'data'}-e-surat.pdf`,
+    image: { type: 'jpeg', quality: 1 },
+    html2canvas: {
+      scale: 3,
+      backgroundColor: '#ffffff',
+      useCORS: true,
+      scrollY: 0
+    },
+    jsPDF: {
+      unit: 'in',
+      format: 'a4',
+      orientation: 'landscape'
+    }
+  };
+
+  html2pdf().set(opt).from(element).save();
+
+  // Kembalikan style
+  element.style.background = '';
+  element.style.padding = '';
 }
 </script>
 </body>
