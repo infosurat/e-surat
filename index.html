@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>e-Surat Kecamatan Seberuang</title>
+  <style>
+    :root{
+      --green: #0f8b66;
+      --green-dark: #0b6b4f;
+      --bg: #f5f7f6;
+      --card: #ffffff;
+      --muted: #666;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
+      background:var(--bg);
+      color:#222;
+    }
+    .center-wrap{height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+    .login-card{width:360px;background:var(--card);padding:28px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.08);text-align:center}
+    .login-card .logo{width:110px;margin-bottom:10px}
+    .login-card h1{margin:6px 0 12px;color:var(--green)}
+    input[type="text"], input[type="password"], input[type="date"], input[type="number"]{
+      width:100%;padding:10px;border:1px solid #e6e9e8;border-radius:8px;margin-top:6px;
+    }
+    .btn{background:var(--green);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+    .btn:hover{background:var(--green-dark)}
+    .error{color:#d9534f;margin-top:8px}
+    .small{font-size:13px;color:var(--muted)}
+    .hidden{display:none}
+    /* Dashboard */
+    .topbar{
+      background:var(--card);
+      box-shadow:0 2px 6px rgba(0,0,0,0.06);
+      padding:12px 0;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:0 16px;
+    }
+    .topbar .logo-sm{width:44px;height:auto}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand h1{font-size:18px;margin:0;color:var(--green)}
+    .logout{background:#dc3545;color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer}
+    .container{max-width:1000px;margin:22px auto;padding:0 16px}
+    .cards{display:flex;gap:14px;justify-content:center;margin-bottom:18px}
+    .card{background:var(--card);border-radius:10px;padding:18px 22px;min-width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(16,24,40,0.06);border:1px solid rgba(15,139,102,0.06);cursor:pointer}
+    .card .icon{font-size:28px}
+    .card .label{font-weight:600;color:var(--green)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    label{font-size:13px;color:var(--muted)}
+    .field{display:flex;flex-direction:column}
+    .table-area{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.04);margin-top:10px}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{padding:10px 8px;border-bottom:1px solid #f0f2f2;text-align:left}
+    th{background:transparent;color:var(--muted);font-weight:600}
+    .btn.small{padding:6px 8px;font-size:13px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <!-- LOGIN -->
+  <div class="center-wrap" id="loginPage">
+    <div class="login-card">
+      <img src="https://www.kapuashulukab.go.id/home/public/assets/images/pages/pages_70Logo-KH-Baru.png" alt="Logo Kapuas Hulu" class="logo">
+      <h1>LOGIN e-Surat</h1>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit" class="btn">Login</button>
+        <div id="error" class="error"></div>
+      </form>
+      <p class="small">Masuk menggunakan akun <b>kecamatanseberuang</b></p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboardPage" class="hidden">
+    <div class="topbar">
+      <div class="brand">
+        <img src="https://www.kapuashulukab.go.id/home/public/assets/images/pages/pages_70Logo-KH-Baru.png" class="logo-sm">
+        <h1>e-Surat Seberuang</h1>
+      </div>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+
+    <main class="container">
+      <div class="cards">
+        <button class="card" id="btnMasuk">
+          <div class="icon">📥</div><div class="label">Surat Masuk</div>
+        </button>
+        <button class="card" id="btnKeluar">
+          <div class="icon">📤</div><div class="label">Surat Keluar</div>
+        </button>
+      </div>
+
+      <section id="formArea" class="hidden">
+        <h2 id="formTitle">Form</h2>
+        <form id="suratForm">
+          <div class="grid">
+            <div class="field"><label>Nomor</label><input type="number" id="nomor" readonly></div>
+            <div class="field"><label>Nomor Surat</label><input type="text" id="nomorSurat" required></div>
+            <div class="field"><label>Tanggal Surat</label><input type="date" id="tanggalSurat" required></div>
+            <div class="field"><label>Hal</label><input type="text" id="hal" required></div>
+            <div class="field" id="tglField"><label>Tanggal Diterima / Dikirim</label><input type="date" id="tanggalKirimTerima" required></div>
+            <div class="field"><label id="asalTujuanLabel">Asal / Tujuan Surat</label><input type="text" id="asalTujuan" required></div>
+          </div>
+          <div style="margin-top:12px;">
+            <button type="submit" class="btn">Simpan</button>
+            <button type="button" class="btn" style="background:#ccc;color:#000" onclick="batalForm()">Batal</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="table-area">
+        <h3 id="tableTitle">Daftar Surat</h3>
+        <table>
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const loginPage = document.getElementById('loginPage');
+    const dashboardPage = document.getElementById('dashboardPage');
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('error');
+    const btnMasuk = document.getElementById('btnMasuk');
+    const btnKeluar = document.getElementById('btnKeluar');
+    const formArea = document.getElementById('formArea');
+    const formTitle = document.getElementById('formTitle');
+    const tableTitle = document.getElementById('tableTitle');
+    const tableHead = document.getElementById('tableHead');
+    const tableBody = document.getElementById('tableBody');
+    const suratForm = document.getElementById('suratForm');
+    const nomorInput = document.getElementById('nomor');
+    const asalTujuanLabel = document.getElementById('asalTujuanLabel');
+    let mode = null;
+
+    // Login logic
+    loginForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value.trim();
+      if(u==='kecamatanseberuang' && p==='seberuang123'){
+        localStorage.setItem('loggedIn','true');
+        showDashboard();
+      } else {
+        errorMsg.textContent = 'Username atau Password salah.';
+      }
+    });
+
+    function showDashboard(){
+      loginPage.classList.add('hidden');
+      dashboardPage.classList.remove('hidden');
+    }
+
+    if(localStorage.getItem('loggedIn')==='true'){showDashboard();}
+
+    function logout(){
+      localStorage.removeItem('loggedIn');
+      location.reload();
+    }
+
+    function batalForm(){
+      formArea.classList.add('hidden');
+      suratForm.reset();
+    }
+
+    function loadData(key){
+      return JSON.parse(localStorage.getItem(key))||[];
+    }
+    function saveData(key,data){
+      localStorage.setItem(key,JSON.stringify(data));
+    }
+
+    function nextNomor(key){
+      const d = loadData(key);
+      return d.length?Math.max(...d.map(x=>Number(x.nomor)))+1:1;
+    }
+
+    function renderTable(key){
+      const data = loadData(key);
+      tableBody.innerHTML='';
+      data.forEach(item=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+          <td>${item.nomor}</td>
+          <td>${item.nomorSurat}</td>
+          <td>${item.tanggalSurat}</td>
+          <td>${item.hal}</td>
+          ${mode==='masuk'?`<td>${item.tanggalKirimTerima}</td><td>${item.asalTujuan}</td>`:`<td>${item.asalTujuan}</td>`}
+          <td><button class='btn small' style='background:#dc3545' onclick='hapusData("${key}",${item.nomor})'>Hapus</button></td>`;
+        tableBody.appendChild(tr);
+      });
+      if(mode==='masuk'){
+        tableHead.innerHTML='<tr><th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tanggal Diterima</th><th>Asal Surat</th><th>Aksi</th></tr>';
+      }else{
+        tableHead.innerHTML='<tr><th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tujuan Surat</th><th>Aksi</th></tr>';
+      }
+    }
+
+    function hapusData(key,nomor){
+      let data = loadData(key);
+      data=data.filter(x=>x.nomor!=nomor);
+      saveData(key,data);
+      renderTable(key);
+    }
+
+    btnMasuk.onclick=()=>{
+      mode='masuk';
+      formArea.classList.remove('hidden');
+      formTitle.textContent='Form Surat Masuk';
+      asalTujuanLabel.textContent='Asal Surat';
+      tableTitle.textContent='Daftar Surat Masuk';
+      nomorInput.value=nextNomor('suratMasuk');
+      renderTable('suratMasuk');
+    };
+
+    btnKeluar.onclick=()=>{
+      mode='keluar';
+      formArea.classList.remove('hidden');
+      formTitle.textContent='Form Surat Keluar';
+      asalTujuanLabel.textContent='Tujuan Surat';
+      tableTitle.textContent='Daftar Surat Keluar';
+      nomorInput.value=nextNomor('suratKeluar');
+      renderTable('suratKeluar');
+    };
+
+    suratForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      if(!mode)return alert('Pilih jenis surat dahulu');
+      const item={
+        nomor:nomorInput.value,
+        nomorSurat:document.getElementById('nomorSurat').value,
+        tanggalSurat:document.getElementById('tanggalSurat').value,
+        hal:document.getElementById('hal').value,
+        tanggalKirimTerima:document.getElementById('tanggalKirimTerima').value,
+        asalTujuan:document.getElementById('asalTujuan').value
+      };
+      const key=mode==='masuk'?'suratMasuk':'suratKeluar';
+      const data=loadData(key);
+      data.push(item);
+      saveData(key,data);
+      renderTable(key);
+      suratForm.reset();
+      nomorInput.value=nextNomor(key);
+    });
+  </script>
+</body>
+</html>
