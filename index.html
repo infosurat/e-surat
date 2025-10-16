@@ -6,59 +6,117 @@
   <title>e-Surat Kecamatan Seberuang</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
-    :root{
-      --green:#0f8b66;
-      --green-dark:#0b6b4f;
-      --bg:#f5f7f6;
-      --card:#ffffff;
-      --muted:#666;
+    :root {
+      --green: #0f8b66;
+      --green-dark: #0b6b4f;
+      --bg: #f5f7f6;
+      --card: #ffffff;
+      --muted: #666;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
-      background:var(--bg);
-      color:#222;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, Segoe UI, Arial, sans-serif;
+      background: var(--bg);
+      color: #222;
     }
-    .center-wrap{height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
-    .login-card{width:360px;background:var(--card);padding:28px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.08);text-align:center}
-    .login-card .logo{width:110px;margin-bottom:10px}
-    .login-card h1{margin:6px 0 12px;color:var(--green)}
-    input[type="text"],input[type="password"],input[type="date"],input[type="number"]{
-      width:100%;padding:10px;border:1px solid #e6e9e8;border-radius:8px;margin-top:6px;
+    .center-wrap {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
     }
-    .btn{background:var(--green);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600}
-    .btn:hover{background:var(--green-dark)}
-    .error{color:#d9534f;margin-top:8px}
-    .small{font-size:13px;color:var(--muted)}
-    .hidden{display:none}
-    .topbar{
-      background:var(--card);
-      box-shadow:0 2px 6px rgba(0,0,0,0.06);
-      padding:12px 16px;
-      display:flex;justify-content:space-between;align-items:center;
+    .login-card {
+      width: 360px;
+      background: var(--card);
+      padding: 28px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+      text-align: center;
     }
-    .topbar .logo-sm{width:44px}
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand h1{font-size:18px;margin:0;color:var(--green)}
-    .logout{background:#dc3545;color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer}
-    .container{max-width:1000px;margin:22px auto;padding:0 16px}
-    .cards{display:flex;gap:14px;justify-content:center;margin-bottom:18px}
-    .card{background:var(--card);border-radius:10px;padding:18px 22px;min-width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(16,24,40,0.06);border:1px solid rgba(15,139,102,0.06);cursor:pointer}
-    .card .icon{font-size:28px}
-    .card .label{font-weight:600;color:var(--green)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-    label{font-size:13px;color:var(--muted)}
-    .field{display:flex;flex-direction:column}
-    .table-area{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.04);margin-top:10px}
-    table{width:100%;border-collapse:collapse;font-size:14px}
-    th,td{padding:10px 8px;border:1px solid #ddd;text-align:left;color:#000}
-    th{background:#0f8b66;color:#fff}
-    .btn.small{padding:6px 8px;font-size:13px;border-radius:6px}
-    .pdf-btn{background:#444;margin-top:10px;float:right}
+    .login-card .logo { width: 110px; margin-bottom: 10px; }
+    .login-card h1 { margin: 6px 0 12px; color: var(--green); }
+    input[type="text"], input[type="password"], input[type="date"], input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e6e9e8;
+      border-radius: 8px;
+      margin-top: 6px;
+    }
+    .btn {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn:hover { background: var(--green-dark); }
+    .error { color: #d9534f; margin-top: 8px; }
+    .small { font-size: 13px; color: var(--muted); }
+    .hidden { display: none; }
+    .topbar {
+      background: var(--card);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .topbar .logo-sm { width: 44px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand h1 { font-size: 18px; margin: 0; color: var(--green); }
+    .logout {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    .container { max-width: 1000px; margin: 22px auto; padding: 0 16px; }
+    .cards {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 18px 22px;
+      min-width: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+      border: 1px solid rgba(15,139,102,0.06);
+      cursor: pointer;
+    }
+    .card .icon { font-size: 28px; }
+    .card .label { font-weight: 600; color: var(--green); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 12px;
+    }
+    label { font-size: 13px; color: var(--muted); }
+    .field { display: flex; flex-direction: column; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td {
+      padding: 10px 8px;
+      border: 1px solid #ddd;
+      text-align: left;
+      color: #000;
+    }
+    th { background: #0f8b66; color: #fff; }
   </style>
 </head>
 <body>
+
   <!-- LOGIN -->
   <div class="center-wrap" id="loginPage">
     <div class="login-card">
@@ -108,131 +166,116 @@
         </form>
       </section>
 
-    
-    <h3 id="tableTitle">Daftar Surat</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tanggal Diterima/Dikirim</th><th>Asal/Tujuan</th>
-        </tr>
-      </thead>
-      <tbody id="dataBody"></tbody>
-    </table>
+      <h3 id="tableTitle">Daftar Surat</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tanggal Diterima/Dikirim</th><th>Asal/Tujuan</th>
+          </tr>
+        </thead>
+        <tbody id="dataBody"></tbody>
+      </table>
+    </main>
   </div>
-</div>
 
-<script>
-const ENDPOINT_MASUK="https://sheetdb.io/api/v1/f10drm0h22cjz";
-const ENDPOINT_KELUAR="https://sheetdb.io/api/v1/247yl7pptsbkc";
-let endpointAktif=null;
+  <script>
+    const ENDPOINT_MASUK = "https://sheetdb.io/api/v1/f10drm0h22cjz";
+    const ENDPOINT_KELUAR = "https://sheetdb.io/api/v1/247yl7pptsbkc";
+    let endpointAktif = null;
 
-const akun={
-  umum:"umum123",kesra:"kesra123",ekbang:"ekbang123",
-  trantib:"trantib123",pem:"pem123",sekcam:"sekcam123"
-};
+    const akun = {
+      umum: "umum123",
+      kesra: "kesra123",
+      ekbang: "ekbang123",
+      trantib: "trantib123",
+      pem: "pem123",
+      sekcam: "sekcam123",
+      kecamatanseberuang: "seberuang123"
+    };
 
-function login(){
-  const u=document.getElementById('username').value.trim();
-  const p=document.getElementById('password').value.trim();
-  if(akun[u] && akun[u]===p){
-    localStorage.setItem('user',u);
-    document.getElementById('loginPage').classList.add('hidden');
-    document.getElementById('dashboard').classList.remove('hidden');
-  }else{
-    document.getElementById('error').textContent="Username atau password salah";
-  }
-}
+    // === LOGIN ===
+    document.getElementById('loginForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value.trim();
+      if (akun[u] && akun[u] === p) {
+        localStorage.setItem('user', u);
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('dashboardPage').classList.remove('hidden');
+      } else {
+        document.getElementById('error').textContent = "Username atau password salah";
+      }
+    });
 
-function logout(){
-  localStorage.removeItem('user');
-  location.reload();
-}
-
-function pilih(jenis){
-  endpointAktif = (jenis==='masuk') ? ENDPOINT_MASUK : ENDPOINT_KELUAR;
-  document.getElementById('formArea').classList.remove('hidden');
-  document.getElementById('formTitle').textContent = jenis==='masuk'?'Form Surat Masuk':'Form Surat Keluar';
-  document.getElementById('tableTitle').textContent = jenis==='masuk'?'Daftar Surat Masuk':'Daftar Surat Keluar';
-  loadData();
-}
-
-document.getElementById('suratForm').addEventListener('submit',async function(e){
-  e.preventDefault();
-  if(!endpointAktif) return alert("Pilih jenis surat dulu");
-  const data={
-    data:[{
-      Nomor:document.getElementById('nomor').value,
-      Nomor_Surat:document.getElementById('nomorSurat').value,
-      Tanggal_Surat:document.getElementById('tanggalSurat').value,
-      Hal:document.getElementById('hal').value,
-      Tanggal_Diterima_Dikirim:document.getElementById('tanggalKirimTerima').value,
-      Asal_Tujuan_Surat:document.getElementById('asalTujuan').value
-    }]
-  };
-  await fetch(endpointAktif,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(data)
-  });
-  alert("Data berhasil disimpan!");
-  this.reset();
-  loadData();
-});
-
-async function loadData(){
-  if(!endpointAktif)return;
-  const res=await fetch(endpointAktif);
-  const data=await res.json();
-  const body=document.getElementById('dataBody');
-  body.innerHTML="";
-  data.forEach(d=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${d.Nomor||""}</td><td>${d.Nomor_Surat||""}</td><td>${d.Tanggal_Surat||""}</td><td>${d.Hal||""}</td><td>${d.Tanggal_Diterima_Dikirim||""}</td><td>${d.Asal_Tujuan_Surat||""}</td>`;
-    body.appendChild(tr);
-  });
-}
-function hapusData(k,n){let d=loadData(k);d=d.filter(x=>x.nomor!=n);saveData(k,d);renderTable(k);}
-btnMasuk.onclick=()=>{mode='masuk';formArea.classList.remove('hidden');formTitle.textContent='Form Surat Masuk';asalTujuanLabel.textContent='Asal Surat';document.getElementById('tglLabel').textContent='Tanggal Diterima';tableTitle.textContent='Daftar Surat Masuk';nomorInput.value=nextNomor('suratMasuk');renderTable('suratMasuk');};
-btnKeluar.onclick=()=>{mode='keluar';formArea.classList.remove('hidden');formTitle.textContent='Form Surat Keluar';asalTujuanLabel.textContent='Tujuan Surat';document.getElementById('tglLabel').textContent='Tanggal Dikirim';tableTitle.textContent='Daftar Surat Keluar';nomorInput.value=nextNomor('suratKeluar');renderTable('suratKeluar');};
-suratForm.addEventListener('submit',e=>{
-  e.preventDefault();if(!mode)return alert('Pilih jenis surat dahulu');
-  const item={nomor:nomorInput.value,nomorSurat:document.getElementById('nomorSurat').value,tanggalSurat:document.getElementById('tanggalSurat').value,hal:document.getElementById('hal').value,tanggalKirimTerima:document.getElementById('tanggalKirimTerima').value,asalTujuan:document.getElementById('asalTujuan').value};
-  const key=mode==='masuk'?'suratMasuk':'suratKeluar';const data=loadData(key);data.push(item);saveData(key,data);renderTable(key);suratForm.reset();nomorInput.value=nextNomor(key);
-});
-async function downloadPDF() {
-  const element = document.getElementById('tableSection');
-
-  // Pastikan elemen terlihat sepenuhnya saat dirender
-  element.style.background = '#ffffff';
-  element.style.padding = '10px';
-  element.scrollIntoView({ behavior: 'instant', block: 'start' });
-
-  // Tunggu sedikit agar render stabil
-  await new Promise(resolve => setTimeout(resolve, 500));
-
-  const opt = {
-    margin: 0.3,
-    filename: `${mode || 'data'}-e-surat.pdf`,
-    image: { type: 'jpeg', quality: 1 },
-    html2canvas: {
-      scale: 3,
-      backgroundColor: '#ffffff',
-      useCORS: true,
-      scrollY: 0
-    },
-    jsPDF: {
-      unit: 'in',
-      format: 'a4',
-      orientation: 'landscape'
+    function logout(){
+      localStorage.removeItem('user');
+      location.reload();
     }
-  };
 
-  html2pdf().set(opt).from(element).save();
+    document.getElementById('btnMasuk').onclick = () => pilih('masuk');
+    document.getElementById('btnKeluar').onclick = () => pilih('keluar');
 
-  // Kembalikan style
-  element.style.background = '';
-  element.style.padding = '';
-}
-</script>
+    function pilih(jenis){
+      endpointAktif = (jenis === 'masuk') ? ENDPOINT_MASUK : ENDPOINT_KELUAR;
+      document.getElementById('formArea').classList.remove('hidden');
+      document.getElementById('formTitle').textContent = jenis === 'masuk' ? 'Form Surat Masuk' : 'Form Surat Keluar';
+      document.getElementById('tableTitle').textContent = jenis === 'masuk' ? 'Daftar Surat Masuk' : 'Daftar Surat Keluar';
+      loadData();
+    }
+
+    document.getElementById('suratForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      if(!endpointAktif) return alert("Pilih jenis surat dulu");
+
+      const data = {
+        data: [{
+          Nomor: document.getElementById('nomor').value,
+          Nomor_Surat: document.getElementById('nomorSurat').value,
+          Tanggal_Surat: document.getElementById('tanggalSurat').value,
+          Hal: document.getElementById('hal').value,
+          Tanggal_Diterima_Dikirim: document.getElementById('tanggalKirimTerima').value,
+          Asal_Tujuan_Surat: document.getElementById('asalTujuan').value
+        }]
+      };
+
+      await fetch(endpointAktif, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      alert("Data berhasil disimpan!");
+      this.reset();
+      loadData();
+    });
+
+    async function loadData(){
+      if(!endpointAktif)return;
+      const res = await fetch(endpointAktif);
+      const data = await res.json();
+      const body = document.getElementById('dataBody');
+      body.innerHTML = "";
+      data.forEach(d=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${d.Nomor||""}</td>
+          <td>${d.Nomor_Surat||""}</td>
+          <td>${d.Tanggal_Surat||""}</td>
+          <td>${d.Hal||""}</td>
+          <td>${d.Tanggal_Diterima_Dikirim||""}</td>
+          <td>${d.Asal_Tujuan_Surat||""}</td>`;
+        body.appendChild(tr);
+      });
+    }
+
+    // auto-login kalau sebelumnya sudah masuk
+    window.onload = () => {
+      const user = localStorage.getItem('user');
+      if (user) {
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('dashboardPage').classList.remove('hidden');
+      }
+    };
+  </script>
 </body>
 </html>
