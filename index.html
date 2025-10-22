@@ -116,10 +116,32 @@
     </div>
 
     <main class="container">
-      <div class="cards">
-        <button class="card" id="btnMasuk"><div class="icon">📥</div><div class="label">Surat Masuk</div></button>
-        <button class="card" id="btnKeluar"><div class="icon">📤</div><div class="label">Surat Keluar</div></button>
-      </div>
+  <div class="cards">
+    <button class="card" id="btnMasuk">
+      <div class="icon">📥</div>
+      <div class="label">Surat Masuk</div>
+    </button>
+
+    <button class="card" id="btnKeluar">
+      <div class="icon">📤</div>
+      <div class="label">Surat Keluar</div>
+    </button>
+
+    <!-- 🔹 Tambahan tombol Disposisi -->
+    <button class="card" id="btnDisposisi">
+      <div class="icon">📄</div>
+      <div class="label">Disposisi</div>
+    </button>
+  </div>
+</main>
+
+<script>
+  // Tombol Disposisi menuju link langsung
+  document.getElementById("btnDisposisi").addEventListener("click", function() {
+    window.location.href = "https://infosurat.github.io/kertas-disposisi/";
+  });
+</script>
+
 
       <section id="formArea" class="hidden">
         <h2 id="formTitle">Form</h2>
