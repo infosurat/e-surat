@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://infosurat.github.io/e-surat/sitemap.xml
