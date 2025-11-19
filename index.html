@@ -354,36 +354,6 @@
         dashboardPage.classList.remove('hidden');
       }
     };
-  </script>
-    <input id="kalimat" placeholder="Tulis kalimat..." />
-<button onclick="simpan()">Simpan</button>
-
-<ul id="list"></ul>
-
-<script>
-function ambilData() {
-    return JSON.parse(localStorage.getItem("daftar_kalimat") || "[]");
-}
-
-function simpan() {
-    let teks = document.getElementById("kalimat").value;
-    if(!teks) return;
-
-    let data = ambilData();
-    data.push(teks);
-
-    localStorage.setItem("daftar_kalimat", JSON.stringify(data));
-    tampil();
-}
-
-function tampil() {
-    let data = ambilData();
-    let html = "";
-    data.forEach(k => html += `<li>${k}</li>`);
-    document.getElementById("list").innerHTML = html;
-}
-
-tampil();
-</script>
+ <script> 
 </body>
 </html>
