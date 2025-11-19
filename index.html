@@ -167,14 +167,24 @@
 
     <button class="pdf-btn" onclick="downloadPDF()">Download PDF</button>
 
-    <!-- 🔥 FITUR SIMPAN KALIMAT -->
-    <div id="kalimatBox">
-      <h3>Simpan Kalimat Favorit (Tersimpan di Browser)</h3>
-      <input id="kalimat" placeholder="Tulis kalimat..." />
-      <button onclick="simpan()">Simpan</button>
+   <!-- 🔥 FITUR SIMPAN KALIMAT -->
+<div id="kalimatBox">
+  <h3>Simpan Kalimat Favorit (Tersimpan di Browser)</h3>
 
-      <ul id="list"></ul>
-    </div>
+  <input id="kalimat" placeholder="Tulis kalimat..." />
+  <button onclick="simpan()">Simpan</button>
+
+  <!-- Tombol show/hide -->
+  <button id="btnToggle" onclick="toggleList()" 
+    style="margin-top:10px;background:#0f8b66;color:white;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;">
+    Lihat Daftar
+  </button>
+
+  <!-- Box yang bisa disembunyikan -->
+  <div id="boxlist" style="display:none; margin-top:10px;">
+    <ul id="list"></ul>
+  </div>
+</div>
 
   </main>
 </div>
@@ -284,25 +294,48 @@ async function downloadPDF(){
 }
 
 // ---------------- FITUR SIMPAN KALIMAT --------------------
-function ambilData(){
-  return JSON.parse(localStorage.getItem("daftar_kalimat")||"[]");
+
+function ambilData() {
+  return JSON.parse(localStorage.getItem("daftar_kalimat") || "[]");
 }
-function simpan(){
-  let teks=document.getElementById("kalimat").value;
-  if(!teks)return;
-  let data=ambilData();
+
+function simpan() {
+  let teks = document.getElementById("kalimat").value;
+  if (!teks) return;
+
+  let data = ambilData();
   data.push(teks);
-  localStorage.setItem("daftar_kalimat",JSON.stringify(data));
-  document.getElementById("kalimat").value="";
+
+  localStorage.setItem("daftar_kalimat", JSON.stringify(data));
+  document.getElementById("kalimat").value = "";
   tampil();
 }
-function tampil(){
-  let data=ambilData();
-  list.innerHTML="";
-  data.forEach(k=>{
-    list.innerHTML+=`<li>${k}</li>`;
+
+function tampil() {
+  let data = ambilData();
+  let html = "";
+
+  data.forEach(k => {
+    html += `<li>${k}</li>`;
   });
+
+  document.getElementById("list").innerHTML = html;
 }
+
+// === Hide/Show daftar kalimat ===
+function toggleList() {
+  let box = document.getElementById("boxlist");
+  let btn = document.getElementById("btnToggle");
+
+  if (box.style.display === "none") {
+    box.style.display = "block";
+    btn.innerText = "Sembunyikan Daftar";
+  } else {
+    box.style.display = "none";
+    btn.innerText = "Lihat Daftar";
+  }
+}
+
 tampil();
 </script>
 
