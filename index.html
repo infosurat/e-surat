@@ -2,281 +2,278 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>e-Surat Kecamatan Seberuang</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>e-Surat Kecamatan Seberuang</title>
 
-<meta name="description" content="Sistem e-Surat Kecamatan Seberuang — Layanan digital untuk pengelolaan surat masuk dan keluar berbasis web.">
-<meta name="keywords" content="e-surat, surat digital, Kecamatan Seberuang, surat masuk, surat keluar, e-surat kapuas hulu">
-<meta name="author" content="Kecamatan Seberuang">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-<!-- Meta Sosial -->
-<meta property="og:title" content="e-Surat Kecamatan Seberuang">
-<meta property="og:description" content="Sistem e-Surat Kecamatan Seberuang — Layanan digital untuk pengelolaan surat masuk dan keluar berbasis web.">
-<meta property="og:url" content="https://infosurat.github.io/e-surat/">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://www.kapuashulukab.go.id/home/public/assets/images/pages/pages_70Logo-KH-Baru.png">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-<style>
+  <style>
     :root {
-      --green: #0f8b66;
+      --green-primary: #0f8b66;
       --green-dark: #0b6b4f;
-      --bg: #f5f7f6;
-      --card: #ffffff;
-      --muted: #666;
+      --bg-soft: #f8fafc;
+      --white: #ffffff;
+      --border: #cbd5e1;
+      --radius: 12px;
     }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, Segoe UI, Arial, sans-serif;
-      background: var(--bg);
-      color: #222;
-    }
-    .center-wrap {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-    .login-card {
-      width: 360px;
-      background: var(--card);
-      padding: 28px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.08);
-      text-align: center;
-    }
-    .login-card .logo { width: 110px; margin-bottom: 10px; }
-    .login-card h1 { margin: 6px 0 12px; color: var(--green); }
-    input[type="text"], input[type="password"], input[type="date"] {
-      width: 100%; padding: 10px; border: 1px solid #ccc;
-      border-radius: 8px; margin-top: 6px;
-    }
-    .btn {
-      background: var(--green); color: #fff;
-      border: none; padding: 10px 14px;
-      border-radius: 8px; cursor: pointer; font-weight: 600;
-    }
+
+    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { margin: 0; background: var(--bg-soft); color: #1e293b; overflow-x: hidden; }
+
+    /* Login & UI */
+    .hidden { display: none !important; }
+    .center-wrap { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--green-primary); padding: 16px; }
+    .login-card { width: 100%; max-width: 380px; background: var(--white); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    
+    .topbar { background: var(--white); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+
+    /* Dashboard Cards */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .stat-card { background: var(--white); padding: 25px; border-radius: var(--radius); cursor: pointer; text-align: center; border: 1px solid #e2e8f0; transition: 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); border-color: var(--green-primary); }
+
+    /* Form Styles */
+    .content-section { background: var(--white); padding: 25px; border-radius: var(--radius); border: 1px solid #e2e8f0; margin-bottom: 25px; }
+    input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-top: 5px; margin-bottom: 15px; font-size: 14px; }
+    .btn { background: var(--green-primary); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
     .btn:hover { background: var(--green-dark); }
-    .hidden { display: none; }
-    .topbar {
-      background: var(--card); box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-      padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+    
+    /* TABLE STYLES (DIPERBAIKI AGAR TIDAK TERHIMPIT) */
+    .table-wrapper { width: 100%; overflow-x: auto; background: white; padding: 5px; }
+    table { width: 100% !important; border-collapse: collapse; min-width: 900px; }
+    
+    th, td { 
+      border: 1px solid #94a3b8; /* Garis lebih jelas */
+      padding: 14px 10px !important; /* Padding lebih luas agar tidak mepet */
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.4;
+      word-wrap: break-word;
     }
-    .topbar .logo-sm { width: 44px; }
-    .container { max-width: 1000px; margin: 22px auto; padding: 0 16px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-    th, td { border: 1px solid #ddd; padding: 8px; }
-    th { background: var(--green); color: #fff; }
 
-    /* Kartu dashboard */
-    .cards { display: flex; gap: 14px; justify-content: center; margin-bottom: 18px; }
-    .card {
-      background: var(--card); border-radius: 10px; padding: 18px 22px; min-width: 160px;
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      box-shadow: 0 6px 18px rgba(16,24,40,0.06);
-      border: 1px solid rgba(15,139,102,0.06); cursor: pointer;
+    th { background: #f1f5f9; color: #334155; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+    
+    /* Mencegah Tanggal terhimpit */
+    td:nth-child(3), td:nth-child(5) { 
+      white-space: nowrap; /* Tanggal tetap satu baris */
+      font-weight: 500;
+      color: #0f172a;
     }
-    .card .icon { font-size: 28px; }
-    .card .label { font-weight: 600; color: var(--green); }
 
-    /* Area penyimpan kalimat */
-    #kalimatBox {
-      background: white;
-      padding: 16px;
-      border-radius: 12px;
-      margin-top: 30px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-    }
-    #kalimatBox input {
-      width: 100%; padding: 10px;
-      border: 1px solid #ccc; border-radius: 8px;
-    }
-    #kalimatBox button {
-      margin-top: 10px; padding: 8px 12px;
-      background: var(--green); color: white; border: none;
-      border-radius: 8px; cursor: pointer;
-    }
-</style>
+    .btn-delete { background: #fee2e2; color: #ef4444; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+
+    /* Export PDF Header */
+    #pdfHeader { text-align: center; margin-bottom: 25px; border-bottom: 3px double #333; padding-bottom: 15px; }
+    #pdfHeader h2 { margin: 0; font-size: 20px; color: black; }
+  </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div class="center-wrap" id="loginPage">
   <div class="login-card">
-    <img src="https://i.imgur.com/mnBT8hv.png" class="logo">
-    <h1> E-SURAT KECAMATAN SEBERUANG</h1>
+    <img src="https://i.imgur.com/mnBT8hv.png" width="80" style="margin-bottom:15px;">
+    <h2 style="color:var(--green-primary); margin:0 0 25px 0;">E-Surat Seberuang</h2>
     <form id="loginForm">
       <input type="text" id="username" placeholder="Username" required />
       <input type="password" id="password" placeholder="Password" required />
-      <button type="submit" class="btn">Login</button>
-      <div id="error" style="color:red;margin-top:8px;"></div>
+      <button type="submit" class="btn" style="width:100%">Masuk Ke Sistem</button>
+      <p id="error" style="color:red; font-size:12px; margin-top:10px;"></p>
     </form>
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboardPage" class="hidden">
-  <div class="topbar">
-    <div class="brand">
-      <img src="https://i.imgur.com/mnBT8hv.png" class="logo-sm">
-      <h1 style="font-size:18px;color:#0f8b66;margin-left:10px;">e-Surat Kecamatan Seberuang</h1>
+  <nav class="topbar">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="https://i.imgur.com/mnBT8hv.png" height="35">
+      <strong style="color:var(--green-primary); font-size:18px;">e-Surat Seberuang</strong>
     </div>
-    <button class="logout" onclick="logout()">Logout</button>
-  </div>
+    <button onclick="logout()" class="btn" style="background:#f1f5f9; color:#334155; padding:8px 15px;">Keluar</button>
+  </nav>
 
-  <main class="container">
-
-    <!-- Kartu pilihan -->
-    <div class="cards">
-      <button class="card" id="btnMasuk"><div class="icon">📥</div><div class="label">Surat Masuk</div></button>
-      <button class="card" id="btnKeluar"><div class="icon">📤</div><div class="label">Surat Keluar</div></button>
-      <button class="card" id="btnDisposisi"><div class="icon">📄</div><div class="label">Disposisi</div></button>
+  <div class="container">
+    <div class="cards-grid">
+      <div class="stat-card" id="btnMasuk"><span style="font-size:30px; display:block;">📥</span><strong>Surat Masuk</strong></div>
+      <div class="stat-card" id="btnKeluar"><span style="font-size:30px; display:block;">📤</span><strong>Surat Keluar</strong></div>
+      <div class="stat-card" onclick="window.location.href='https://infosurat.github.io/kertas-disposisi/'">
+        <span style="font-size:30px; display:block;">📄</span><strong>Disposisi</strong>
+      </div>
     </div>
 
-    <!-- Form -->
-    <section id="formArea" class="hidden">
-      <h2 id="formTitle">Form</h2>
+    <section id="formArea" class="content-section hidden">
+      <h3 id="formTitle" style="margin-top:0; border-left:4px solid var(--green-primary); padding-left:10px;">Form Input</h3>
       <form id="suratForm">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
-          <div><label>Nomor</label><input type="text" id="nomor" required></div>
-          <div><label>Nomor Surat</label><input type="text" id="nomorSurat" required></div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:15px;">
+          <div><label>Nomor Agenda</label><input type="text" id="nomor" required placeholder="Contoh: 001"></div>
+          <div><label>Nomor Surat</label><input type="text" id="nomorSurat" required placeholder="Nomor resmi surat"></div>
           <div><label>Tanggal Surat</label><input type="date" id="tanggalSurat" required></div>
-          <div><label>Hal</label><input type="text" id="hal" required></div>
-          <div><label id="tglLabel">Tanggal</label><input type="date" id="tanggalKirimTerima" required></div>
-          <div><label id="asalTujuanLabel">Asal/Tujuan</label><input type="text" id="asalTujuan" required></div>
+          <div><label>Perihal / Hal</label><input type="text" id="hal" required placeholder="Isi perihal surat"></div>
+          <div><label id="tglLabel">Tanggal Update</label><input type="date" id="tanggalKirimTerima" required></div>
+          <div><label id="asalTujuanLabel">Asal / Tujuan</label><input type="text" id="asalTujuan" required placeholder="Nama instansi/orang"></div>
         </div>
-        <button type="submit" class="btn" style="margin-top:12px;">Simpan</button>
+        <button type="submit" class="btn" style="margin-top:10px;">Simpan Data Ke Database</button>
       </form>
     </section>
 
-    <!-- Tabel -->
-    <h3 id="tableTitle">Daftar Surat</h3>
-    <div id="tableSection">
-      <table>
-        <thead>
-          <tr>
-            <th>Nomor</th><th>Nomor Surat</th><th>Tanggal Surat</th><th>Hal</th><th>Tanggal</th><th>Asal/Tujuan</th><th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody id="dataBody"></tbody>
-      </table>
-    </div>
+    <section id="tableDisplay" class="content-section hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 id="tableTitle" style="margin:0;">Daftar Surat</h3>
+        <button onclick="downloadPDF()" style="background:#1e293b; color:white;" class="btn">Download PDF (Landscape)</button>
+      </div>
 
-    <button class="pdf-btn" onclick="downloadPDF()">Download PDF</button>
-
-  
+      <div id="tableSection" class="table-wrapper">
+        <div id="pdfHeader" class="hidden">
+            <h2>LAPORAN DATA E-SURAT KECAMATAN SEBERUANG</h2>
+            <p id="pdfSubTitle" style="text-transform:uppercase; letter-spacing:1px;"></p>
+        </div>
+        <table id="mainTable">
+          <thead>
+            <tr>
+              <th style="width:50px">No</th>
+              <th>Nomor Surat</th>
+              <th style="width:110px">Tgl Surat</th>
+              <th>Perihal / Hal</th>
+              <th style="width:110px">Tgl Update</th>
+              <th>Asal / Tujuan</th>
+              <th class="action-col" style="width:80px">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="dataBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
 
 <script>
-// ---------------- LOGIN --------------------
-const akun = {
-  umum:"umum123", kesra:"kesra123", ekbang:"ekbang123",
-  trantib:"trantib123", pem:"pem123", sekcam:"sekcam123",
-  kecamatanseberuang:"seberuang123"
-};
-document.getElementById('loginForm').addEventListener('submit', e=>{
-  e.preventDefault();
-  const u=username.value.trim(), p=password.value.trim();
-  if(akun[u]===p){
-    localStorage.setItem("user",u);
-    loginPage.classList.add("hidden");
-    dashboardPage.classList.remove("hidden");
-  } else error.textContent="Username atau password salah.";
-});
-function logout(){ localStorage.removeItem("user"); location.reload(); }
+const akun = { kecamatanseberuang: "seberuang123", umum: "umum123" };
+const ENDPOINT_MASUK = "https://sheetdb.io/api/v1/f10drm0h22cjz";
+const ENDPOINT_KELUAR = "https://sheetdb.io/api/v1/247yl7pptsbkc";
+let endpointAktif = null;
 
-window.onload = ()=>{
-  if(localStorage.getItem("user")){
-    loginPage.classList.add("hidden");
-    dashboardPage.classList.remove("hidden");
+// AUTH
+document.getElementById('loginForm').onsubmit = (e) => {
+  e.preventDefault();
+  if (akun[username.value] === password.value) {
+    localStorage.setItem("user", username.value);
+    showDashboard();
+  } else {
+    document.getElementById('error').textContent = "Username atau Password Salah!";
   }
 };
 
-// ---------------- FITUR SURAT --------------------
-const ENDPOINT_MASUK="https://sheetdb.io/api/v1/f10drm0h22cjz";
-const ENDPOINT_KELUAR="https://sheetdb.io/api/v1/247yl7pptsbkc";
-let endpointAktif=null;
+function logout() { localStorage.removeItem("user"); location.reload(); }
+function showDashboard() {
+  loginPage.classList.add("hidden");
+  dashboardPage.classList.remove("hidden");
+}
 
-btnMasuk.onclick=()=>setJenis("masuk");
-btnKeluar.onclick=()=>setJenis("keluar");
-btnDisposisi.onclick=()=>window.location.href="https://infosurat.github.io/kertas-disposisi/";
+// SURAT LOGIC
+document.getElementById('btnMasuk').onclick = () => initTable("masuk");
+document.getElementById('btnKeluar').onclick = () => initTable("keluar");
 
-function setJenis(j){
-  endpointAktif = j==="masuk"?ENDPOINT_MASUK:ENDPOINT_KELUAR;
+async function initTable(jenis) {
+  endpointAktif = jenis === "masuk" ? ENDPOINT_MASUK : ENDPOINT_KELUAR;
   formArea.classList.remove("hidden");
-  formTitle.textContent = j==="masuk"?"Form Surat Masuk":"Form Surat Keluar";
-  tableTitle.textContent = j==="masuk"?"Daftar Surat Masuk":"Daftar Surat Keluar";
-  tglLabel.textContent = j==="masuk"?"Tanggal Diterima":"Tanggal Dikirim";
-  asalTujuanLabel.textContent = j==="masuk"?"Asal Surat":"Tujuan Surat";
+  tableDisplay.classList.remove("hidden");
+  formTitle.textContent = "Input Surat " + jenis.toUpperCase();
+  tableTitle.textContent = "Data Surat " + jenis.toUpperCase();
+  tglLabel.textContent = jenis === "masuk" ? "Tanggal Diterima" : "Tanggal Dikirim";
   loadData();
 }
 
-// simpan data sheetdb
-suratForm.addEventListener("submit",async e=>{
+suratForm.onsubmit = async (e) => {
   e.preventDefault();
-  const payload={data:[{
-    Nomor:nomor.value,Nomor_Surat:nomorSurat.value,
-    Tanggal_Surat:tanggalSurat.value,Hal:hal.value,
-    Tanggal_Diterima_Dikirim:tanggalKirimTerima.value,
-    Asal_Tujuan_Surat:asalTujuan.value
-  }]};
-  await fetch(endpointAktif,{
-    method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(payload)
-  });
-  alert("Tersimpan!");
-  suratForm.reset();
-  loadData();
-});
+  const saveBtn = e.target.querySelector('button');
+  saveBtn.textContent = "Menyimpan...";
+  saveBtn.disabled = true;
 
-// load tabel
-async function loadData(){
-  const res=await fetch(endpointAktif);
-  const data=await res.json();
-  dataBody.innerHTML="";
-  data.forEach((d,i)=>{
-    dataBody.innerHTML+=`
-      <tr>
-        <td>${d.Nomor||""}</td>
-        <td>${d.Nomor_Surat||""}</td>
-        <td>${d.Tanggal_Surat||""}</td>
-        <td>${d.Hal||""}</td>
-        <td>${d.Tanggal_Diterima_Dikirim||""}</td>
-        <td>${d.Asal_Tujuan_Surat||""}</td>
-        <td><button onclick="hapus(${i})">Hapus</button></td>
-      </tr>`;
-  });
+  const data = [{
+    Nomor: nomor.value, Nomor_Surat: nomorSurat.value, Tanggal_Surat: tanggalSurat.value,
+    Hal: hal.value, Tanggal_Diterima_Dikirim: tanggalKirimTerima.value, Asal_Tujuan_Surat: asalTujuan.value
+  }];
+  
+  try {
+    await fetch(endpointAktif, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({data}) });
+    alert("Data Berhasil Disimpan!");
+    suratForm.reset();
+    loadData();
+  } catch(err) {
+    alert("Gagal menyimpan data!");
+  } finally {
+    saveBtn.textContent = "Simpan Data Ke Database";
+    saveBtn.disabled = false;
+  }
+};
+
+async function loadData() {
+  dataBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Memuat Data...</td></tr>';
+  const res = await fetch(endpointAktif);
+  const data = await res.json();
+  dataBody.innerHTML = data.map(d => `
+    <tr>
+      <td style="text-align:center;">${d.Nomor}</td>
+      <td>${d.Nomor_Surat}</td>
+      <td>${d.Tanggal_Surat}</td>
+      <td>${d.Hal}</td>
+      <td>${d.Tanggal_Diterima_Dikirim}</td>
+      <td>${d.Asal_Tujuan_Surat}</td>
+      <td class="action-col" style="text-align:center;">
+        <button class="btn-delete" onclick="hapus('${d.Nomor}')">Hapus</button>
+      </td>
+    </tr>`).join('');
 }
 
-// hapus
-async function hapus(i){
-  if(!confirm("Yakin hapus?"))return;
-  const res=await fetch(endpointAktif);
-  const data=await res.json();
-  const id=data[i].Nomor;
-  await fetch(`${endpointAktif}/Nomor/${id}`,{method:"DELETE"});
-  loadData();
+async function hapus(id) {
+  if (confirm("Hapus data dengan No. Agenda: " + id + "?")) {
+    await fetch(`${endpointAktif}/Nomor/${id}`, { method: "DELETE" });
+    loadData();
+  }
 }
 
-// Download PDF
-async function downloadPDF(){
-  const el=document.getElementById("tableSection");
-  const opt={
-    margin:0.3,
-    filename:"e-surat.pdf",
-    image:{type:"jpeg",quality:1},
-    html2canvas:{scale:2,scrollY:0},
-    jsPDF:{unit:"in",format:"a4",orientation:"landscape"}
+// --- FUNGSI DOWNLOAD PDF FINAL (ANTI TERHIMPIT) ---
+async function downloadPDF() {
+  const element = document.getElementById("tableSection");
+  const actionCols = document.querySelectorAll('.action-col');
+  const pdfHeader = document.getElementById('pdfHeader');
+  
+  if (document.querySelectorAll("#dataBody tr").length === 0) return alert("Tidak ada data untuk dicetak.");
+
+  // Sembunyikan kolom aksi & tampilkan header laporan
+  actionCols.forEach(col => col.style.display = 'none');
+  pdfHeader.classList.remove('hidden');
+  document.getElementById('pdfSubTitle').textContent = tableTitle.textContent;
+
+  const opt = {
+    margin: [0.4, 0.4],
+    filename: `Laporan_E-Surat_${tableTitle.textContent.replace(/\s+/g, '_')}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { 
+      scale: 3, // Skala lebih tinggi agar teks tajam
+      useCORS: true,
+      letterRendering: true, // Mencegah huruf tumpang tindih
+      scrollY: 0,
+      scrollX: 0
+    },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
   };
-  html2pdf().set(opt).from(el).save();
+
+  try {
+    window.scrollTo(0, 0); 
+    await html2pdf().set(opt).from(element).save();
+  } catch (e) {
+    alert("Proses cetak gagal.");
+  } finally {
+    // Kembalikan tampilan semula
+    actionCols.forEach(col => col.style.display = '');
+    pdfHeader.classList.add('hidden');
+  }
 }
 
-
-
-tampil();
+window.onload = () => { if (localStorage.getItem("user")) showDashboard(); };
 </script>
-
 </body>
 </html>
