@@ -36,17 +36,17 @@
 
     /* Form Styles */
     .content-section { background: var(--white); padding: 25px; border-radius: var(--radius); border: 1px solid #e2e8f0; margin-bottom: 25px; }
-    input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-top: 5px; margin-bottom: 15px; font-size: 14px; }
+    input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-top: 5px; margin-bottom: 15px; font-size: 14px; background: #fff; }
     .btn { background: var(--green-primary); color: #fff; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
     .btn:hover { background: var(--green-dark); }
     
-    /* TABLE STYLES (DIPERBAIKI AGAR TIDAK TERHIMPIT) */
+    /* TABLE STYLES */
     .table-wrapper { width: 100%; overflow-x: auto; background: white; padding: 5px; }
     table { width: 100% !important; border-collapse: collapse; min-width: 900px; }
     
     th, td { 
-      border: 1px solid #94a3b8; /* Garis lebih jelas */
-      padding: 14px 10px !important; /* Padding lebih luas agar tidak mepet */
+      border: 1px solid #94a3b8;
+      padding: 14px 10px !important;
       text-align: left;
       font-size: 13px;
       line-height: 1.4;
@@ -55,9 +55,8 @@
 
     th { background: #f1f5f9; color: #334155; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
     
-    /* Mencegah Tanggal terhimpit */
     td:nth-child(3), td:nth-child(5) { 
-      white-space: nowrap; /* Tanggal tetap satu baris */
+      white-space: nowrap;
       font-weight: 500;
       color: #0f172a;
     }
@@ -118,9 +117,33 @@
     </section>
 
     <section id="tableDisplay" class="content-section hidden">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px;">
         <h3 id="tableTitle" style="margin:0;">Daftar Surat</h3>
-        <button onclick="downloadPDF()" style="background:#1e293b; color:white;" class="btn">Download PDF (Landscape)</button>
+        
+        <!-- Filter Bulan & Tahun -->
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <div>
+            <select id="filterBulan" onchange="filterDataBulan()" style="margin:0; padding:10px;">
+              <option value="">-- Semua Bulan --</option>
+              <option value="01">Januari</option>
+              <option value="02">Februari</option>
+              <option value="03">Maret</option>
+              <option value="04">April</option>
+              <option value="05">Mei</option>
+              <option value="06">Juni</option>
+              <option value="07">Juli</option>
+              <option value="08">Agustus</option>
+              <option value="09">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+          </div>
+          <div>
+            <input type="number" id="filterTahun" value="2026" onchange="filterDataBulan()" style="margin:0; padding:10px; width:90px;" placeholder="Tahun">
+          </div>
+          <button onclick="downloadPDF()" style="background:#1e293b; color:white; margin:0;" class="btn">Download PDF (Landscape)</button>
+        </div>
       </div>
 
       <div id="tableSection" class="table-wrapper">
@@ -149,9 +172,13 @@
 
 <script>
 const akun = { kecamatanseberuang: "seberuang123", umum: "umum123" };
-const ENDPOINT_MASUK = "https://sheetdb.io/api/v1/f10drm0h22cjz";
-const ENDPOINT_KELUAR = "https://sheetdb.io/api/v1/247yl7pptsbkc";
+
+// Endpoint SheetDB Terpisah untuk Surat Masuk & Surat Keluar
+const ENDPOINT_MASUK = "https://sheetdb.io/api/v1/f10drm0h22cjz"; // Ganti dengan endpoint SheetDB Surat Masuk Anda jika berbeda
+const ENDPOINT_KELUAR = "https://sheetdb.io/api/v1/247yl7pptsbkc"; // Ganti dengan endpoint SheetDB Surat Keluar Anda jika berbeda
+
 let endpointAktif = null;
+let cacheDataSurat = []; 
 
 // AUTH
 document.getElementById('loginForm').onsubmit = (e) => {
@@ -175,12 +202,17 @@ document.getElementById('btnMasuk').onclick = () => initTable("masuk");
 document.getElementById('btnKeluar').onclick = () => initTable("keluar");
 
 async function initTable(jenis) {
+  // Mengarahkan ke database yang sesuai berdasarkan pilihan
   endpointAktif = jenis === "masuk" ? ENDPOINT_MASUK : ENDPOINT_KELUAR;
+  
   formArea.classList.remove("hidden");
   tableDisplay.classList.remove("hidden");
   formTitle.textContent = "Input Surat " + jenis.toUpperCase();
   tableTitle.textContent = "Data Surat " + jenis.toUpperCase();
   tglLabel.textContent = jenis === "masuk" ? "Tanggal Diterima" : "Tanggal Dikirim";
+  
+  // Reset filter bulan kembali ke default
+  document.getElementById('filterBulan').value = "";
   loadData();
 }
 
@@ -191,8 +223,12 @@ suratForm.onsubmit = async (e) => {
   saveBtn.disabled = true;
 
   const data = [{
-    Nomor: nomor.value, Nomor_Surat: nomorSurat.value, Tanggal_Surat: tanggalSurat.value,
-    Hal: hal.value, Tanggal_Diterima_Dikirim: tanggalKirimTerima.value, Asal_Tujuan_Surat: asalTujuan.value
+    Nomor: nomor.value, 
+    Nomor_Surat: nomorSurat.value, 
+    Tanggal_Surat: tanggalSurat.value,
+    Hal: hal.value, 
+    Tanggal_Diterima_Dikirim: tanggalKirimTerima.value, 
+    Asal_Tujuan_Surat: asalTujuan.value
   }];
   
   try {
@@ -210,30 +246,88 @@ suratForm.onsubmit = async (e) => {
 
 async function loadData() {
   dataBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Memuat Data...</td></tr>';
-  const res = await fetch(endpointAktif);
-  const data = await res.json();
+  try {
+    const res = await fetch(endpointAktif);
+    cacheDataSurat = await res.json();
+    tampilkanTabel(cacheDataSurat);
+  } catch (err) {
+    dataBody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Gagal memuat data dari server.</td></tr>';
+  }
+}
+
+function tampilkanTabel(data) {
+  if (!Array.isArray(data) || data.length === 0) {
+    dataBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Tidak ada data pada periode ini.</td></tr>';
+    return;
+  }
+
   dataBody.innerHTML = data.map(d => `
     <tr>
-      <td style="text-align:center;">${d.Nomor}</td>
-      <td>${d.Nomor_Surat}</td>
-      <td>${d.Tanggal_Surat}</td>
-      <td>${d.Hal}</td>
-      <td>${d.Tanggal_Diterima_Dikirim}</td>
-      <td>${d.Asal_Tujuan_Surat}</td>
+      <td style="text-align:center;">${d.Nomor || ''}</td>
+      <td>${d.Nomor_Surat || ''}</td>
+      <td>${d.Tanggal_Surat || ''}</td>
+      <td>${d.Hal || ''}</td>
+      <td>${d.Tanggal_Diterima_Dikirim || ''}</td>
+      <td>${d.Asal_Tujuan_Surat || ''}</td>
       <td class="action-col" style="text-align:center;">
         <button class="btn-delete" onclick="hapus('${d.Nomor}')">Hapus</button>
       </td>
     </tr>`).join('');
 }
 
+// FUNGSI FILTER BULAN & TAHUN (Mendukung Berbagai Format Tanggal)
+function filterDataBulan() {
+  const bulanPilihan = document.getElementById('filterBulan').value;
+  const tahunPilihan = document.getElementById('filterTahun').value;
+
+  const hasilFilter = cacheDataSurat.filter(d => {
+    const tglSurat = d.Tanggal_Surat || ""; 
+    if (!tglSurat) return false;
+    
+    let tahun = "";
+    let bulan = "";
+
+    if (tglSurat.includes("-")) {
+      const parts = tglSurat.split("-");
+      if (parts[0].length === 4) {
+        tahun = parts[0];
+        bulan = parts[1];
+      } else {
+        tahun = parts[2];
+        bulan = parts[1];
+      }
+    } else if (tglSurat.includes("/")) {
+      const parts = tglSurat.split("/");
+      if (parts[0].length === 4) {
+        tahun = parts[0];
+        bulan = parts[1];
+      } else {
+        tahun = parts[2];
+        bulan = parts[1];
+      }
+    }
+    
+    const matchBulan = bulanPilihan ? bulan === bulanPilihan : true;
+    const matchTahun = tahunPilihan ? tahun === tahunPilihan : true;
+    
+    return matchBulan && matchTahun;
+  });
+
+  tampilkanTabel(hasilFilter);
+}
+
 async function hapus(id) {
   if (confirm("Hapus data dengan No. Agenda: " + id + "?")) {
-    await fetch(`${endpointAktif}/Nomor/${id}`, { method: "DELETE" });
-    loadData();
+    try {
+      await fetch(`${endpointAktif}/Nomor/${id}`, { method: "DELETE" });
+      loadData();
+    } catch(err) {
+      alert("Gagal menghapus data.");
+    }
   }
 }
 
-// --- FUNGSI DOWNLOAD PDF FINAL (ANTI TERHIMPIT) ---
+// FUNGSI DOWNLOAD PDF
 async function downloadPDF() {
   const element = document.getElementById("tableSection");
   const actionCols = document.querySelectorAll('.action-col');
@@ -241,19 +335,23 @@ async function downloadPDF() {
   
   if (document.querySelectorAll("#dataBody tr").length === 0) return alert("Tidak ada data untuk dicetak.");
 
-  // Sembunyikan kolom aksi & tampilkan header laporan
   actionCols.forEach(col => col.style.display = 'none');
   pdfHeader.classList.remove('hidden');
-  document.getElementById('pdfSubTitle').textContent = tableTitle.textContent;
+  
+  const bulanSelect = document.getElementById('filterBulan');
+  const bulanNama = bulanSelect.value ? bulanSelect.options[bulanSelect.selectedIndex].text : "Semua Bulan";
+  const tahunVal = document.getElementById('filterTahun').value;
+  
+  document.getElementById('pdfSubTitle').textContent = `${tableTitle.textContent} - Periode: ${bulanNama} ${tahunVal}`;
 
   const opt = {
     margin: [0.4, 0.4],
-    filename: `Laporan_E-Surat_${tableTitle.textContent.replace(/\s+/g, '_')}.pdf`,
+    filename: `Laporan_E-Surat_${tableTitle.textContent.replace(/\s+/g, '_')}_${bulanNama}_${tahunVal}.pdf`,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { 
-      scale: 3, // Skala lebih tinggi agar teks tajam
+      scale: 3, 
       useCORS: true,
-      letterRendering: true, // Mencegah huruf tumpang tindih
+      letterRendering: true, 
       scrollY: 0,
       scrollX: 0
     },
@@ -267,7 +365,6 @@ async function downloadPDF() {
   } catch (e) {
     alert("Proses cetak gagal.");
   } finally {
-    // Kembalikan tampilan semula
     actionCols.forEach(col => col.style.display = '');
     pdfHeader.classList.add('hidden');
   }
