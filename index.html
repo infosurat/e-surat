@@ -87,7 +87,7 @@
   <nav class="topbar">
     <div style="display:flex; align-items:center; gap:10px;">
       <img src="https://i.imgur.com/mnBT8hv.png" height="35">
-      <strong style="color:var(--green-primary); font-size:18px;">e-Surat Kecamatan Seberuang</strong>
+      <strong style="color:var(--green-primary); font-size:18px;">e-Surat Seberuang</strong>
     </div>
     <button onclick="logout()" class="btn" style="background:#f1f5f9; color:#334155; padding:8px 15px;">Keluar</button>
   </nav>
@@ -120,10 +120,10 @@
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px;">
         <h3 id="tableTitle" style="margin:0;">Daftar Surat</h3>
         
-        <!-- Filter Bulan & Tahun -->
+        <!-- Filter Bulan & Kotak Pencarian Teks Bebas -->
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
           <div>
-            <select id="filterBulan" onchange="filterDataBulan()" style="margin:0; padding:10px;">
+            <select id="filterBulan" onchange="filterDataSurat()" style="margin:0; padding:10px;">
               <option value="">-- Semua Bulan --</option>
               <option value="01">Januari</option>
               <option value="02">Februari</option>
@@ -140,7 +140,8 @@
             </select>
           </div>
           <div>
-            <input type="number" id="filterTahun" value="2026" onchange="filterDataBulan()" style="margin:0; padding:10px; width:90px;" placeholder="Tahun">
+            <!-- Kotak Pencarian Teks Bebas (Ketik kata apa saja: nomor, perihal, instansi, dll) -->
+            <input type="text" id="inputPencarian" oninput="filterDataSurat()" style="margin:0; padding:10px; width:220px;" placeholder="Cari surat / perihal / nomor...">
           </div>
           <button onclick="downloadPDF()" style="background:#1e293b; color:white; margin:0;" class="btn">Download PDF (Landscape)</button>
         </div>
@@ -173,9 +174,8 @@
 <script>
 const akun = { kecamatanseberuang: "seberuang123", umum: "umum123" };
 
-// Endpoint SheetDB Terpisah untuk Surat Masuk & Surat Keluar
-const ENDPOINT_MASUK = "https://sheetdb.io/api/v1/f10drm0h22cjz"; // Ganti dengan endpoint SheetDB Surat Masuk Anda jika berbeda
-const ENDPOINT_KELUAR = "https://sheetdb.io/api/v1/247yl7pptsbkc"; // Ganti dengan endpoint SheetDB Surat Keluar Anda jika berbeda
+const ENDPOINT_MASUK = "https://sheetdb.io/api/v1/f10drm0h22cjz"; 
+const ENDPOINT_KELUAR = "https://sheetdb.io/api/v1/247yl7pptsbkc"; 
 
 let endpointAktif = null;
 let cacheDataSurat = []; 
@@ -202,7 +202,6 @@ document.getElementById('btnMasuk').onclick = () => initTable("masuk");
 document.getElementById('btnKeluar').onclick = () => initTable("keluar");
 
 async function initTable(jenis) {
-  // Mengarahkan ke database yang sesuai berdasarkan pilihan
   endpointAktif = jenis === "masuk" ? ENDPOINT_MASUK : ENDPOINT_KELUAR;
   
   formArea.classList.remove("hidden");
@@ -211,8 +210,8 @@ async function initTable(jenis) {
   tableTitle.textContent = "Data Surat " + jenis.toUpperCase();
   tglLabel.textContent = jenis === "masuk" ? "Tanggal Diterima" : "Tanggal Dikirim";
   
-  // Reset filter bulan kembali ke default
   document.getElementById('filterBulan').value = "";
+  document.getElementById('inputPencarian').value = ""; // Reset kotak pencarian saat ganti menu
   loadData();
 }
 
@@ -249,7 +248,7 @@ async function loadData() {
   try {
     const res = await fetch(endpointAktif);
     cacheDataSurat = await res.json();
-    tampilkanTabel(cacheDataSurat);
+    tampilkanTabel(cacheDataSurat); // Tampilkan semua data secara default
   } catch (err) {
     dataBody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Gagal memuat data dari server.</td></tr>';
   }
@@ -257,7 +256,7 @@ async function loadData() {
 
 function tampilkanTabel(data) {
   if (!Array.isArray(data) || data.length === 0) {
-    dataBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Tidak ada data pada periode ini.</td></tr>';
+    dataBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Tidak ada data ditemukan.</td></tr>';
     return;
   }
 
@@ -275,42 +274,39 @@ function tampilkanTabel(data) {
     </tr>`).join('');
 }
 
-// FUNGSI FILTER BULAN & TAHUN (Mendukung Berbagai Format Tanggal)
-function filterDataBulan() {
+// FUNGSI FILTER BULAN & PENCARIAN KATA KUNCI (LIVE SEARCH)
+function filterDataSurat() {
   const bulanPilihan = document.getElementById('filterBulan').value;
-  const tahunPilihan = document.getElementById('filterTahun').value;
+  const keyword = document.getElementById('inputPencarian').value.toLowerCase().trim();
 
   const hasilFilter = cacheDataSurat.filter(d => {
+    // Filter Bulan berdasarkan Tanggal Surat
     const tglSurat = d.Tanggal_Surat || ""; 
-    if (!tglSurat) return false;
-    
-    let tahun = "";
     let bulan = "";
 
     if (tglSurat.includes("-")) {
       const parts = tglSurat.split("-");
-      if (parts[0].length === 4) {
-        tahun = parts[0];
-        bulan = parts[1];
-      } else {
-        tahun = parts[2];
-        bulan = parts[1];
-      }
+      bulan = parts[0].length === 4 ? parts[1] : parts[1];
     } else if (tglSurat.includes("/")) {
       const parts = tglSurat.split("/");
-      if (parts[0].length === 4) {
-        tahun = parts[0];
-        bulan = parts[1];
-      } else {
-        tahun = parts[2];
-        bulan = parts[1];
-      }
+      bulan = parts[0].length === 4 ? parts[1] : parts[1];
     }
     
     const matchBulan = bulanPilihan ? bulan === bulanPilihan : true;
-    const matchTahun = tahunPilihan ? tahun === tahunPilihan : true;
+
+    // Pencarian Teks Bebas (Mencari di semua kolom sekaligus)
+    const teksBaris = (
+      (d.Nomor || "") + " " +
+      (d.Nomor_Surat || "") + " " +
+      (d.Tanggal_Surat || "") + " " +
+      (d.Hal || "") + " " +
+      (d.Tanggal_Diterima_Dikirim || "") + " " +
+      (d.Asal_Tujuan_Surat || "")
+    ).toLowerCase();
+
+    const matchKeyword = keyword ? teksBaris.includes(keyword) : true;
     
-    return matchBulan && matchTahun;
+    return matchBulan && matchKeyword;
   });
 
   tampilkanTabel(hasilFilter);
@@ -340,13 +336,14 @@ async function downloadPDF() {
   
   const bulanSelect = document.getElementById('filterBulan');
   const bulanNama = bulanSelect.value ? bulanSelect.options[bulanSelect.selectedIndex].text : "Semua Bulan";
-  const tahunVal = document.getElementById('filterTahun').value;
+  const keywordVal = document.getElementById('inputPencarian').value.trim();
+  const infoPencarian = keywordVal ? `Pencarian: "${keywordVal}"` : "Semua Data";
   
-  document.getElementById('pdfSubTitle').textContent = `${tableTitle.textContent} - Periode: ${bulanNama} ${tahunVal}`;
+  document.getElementById('pdfSubTitle').textContent = `${tableTitle.textContent} - Periode: ${bulanNama} (${infoPencarian})`;
 
   const opt = {
     margin: [0.4, 0.4],
-    filename: `Laporan_E-Surat_${tableTitle.textContent.replace(/\s+/g, '_')}_${bulanNama}_${tahunVal}.pdf`,
+    filename: `Laporan_E-Surat_${tableTitle.textContent.replace(/\s+/g, '_')}_${bulanNama}.pdf`,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { 
       scale: 3, 
